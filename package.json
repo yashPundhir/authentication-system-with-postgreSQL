@@ -1,0 +1,24 @@
+{
+	"name": "auth-with-postgres",
+	"version": "1.0.0",
+	"description": "A simple authentication system with postgreSQL",
+	"main": "server.js",
+	"type": "module",
+	"scripts": {
+		"start": "node src/server.js",
+		"dev": "nodemon src/server.js"
+	},
+	"author": "yashPundhir",
+	"license": "ISC",
+	"devDependencies": {
+		"nodemon": "^3.1.10"
+	},
+	"dependencies": {
+		"cookie-parser": "^1.4.7",
+		"cors": "^2.8.5",
+		"dotenv": "^16.5.0",
+		"express": "^5.1.0",
+		"jsonwebtoken": "^9.0.2",
+		"nodemailer": "^7.0.3"
+	}
+}
