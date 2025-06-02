@@ -167,3 +167,96 @@ Next steps:
 
 More information in our documentation:
 https://pris.ly/d/getting-started
+
+---
+
+### Ques: after running this command, `npx prisma db push`, a generated foder is created in my src folder with lots of files. what are these files and do i need to keep these files in gitignore. Another thing is there is a command `npx prisma generat`e and one more is `npx prisma migrate`, what is the different between these 2 command and the use case of both?
+
+Great questions — understanding these is key to using Prisma effectively.
+
+---
+
+## ✅ 1. **What is the `.prisma/client` folder inside `node_modules`?**
+
+After you run:
+
+```bash
+npx prisma generate
+```
+
+Prisma generates a **client library** based on your schema. This client allows you to use `prisma.user.findMany()` and similar methods in your code.
+
+When you run `npx prisma db push`, Prisma **also** calls `prisma generate` internally (so you don't always need to run it separately unless you change the schema and skip `db push` or `migrate`).
+
+---
+
+## ✅ 2. **What is the `@prisma/client/generation` folder you saw?**
+
+If you see a `generated` folder inside your own **`src/`** directory, it’s likely because:
+
+- Your `schema.prisma` has a custom `output` path set in the generator block like this:
+
+```prisma
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/client"
+}
+```
+
+This is **optional**, and it just changes **where the generated Prisma Client code lives.** By default, it’s stored in `node_modules/@prisma/client`, which is better for most cases.
+
+### ➤ Do you need to **keep the `generated` folder**?
+
+- ✅ If you **customized the output path**, yes, keep it — but consider `.gitignore`-ing it if you **always generate it** as part of your build/deploy.
+- ❌ If it was created by mistake or you're using the default output, feel free to delete it and let Prisma generate into `node_modules` instead.
+
+---
+
+## ✅ 3. **Difference: `prisma generate` vs `prisma migrate` vs `db push`**
+
+| Command                  | Purpose                                                          | Use Case                                                             |
+| ------------------------ | ---------------------------------------------------------------- | -------------------------------------------------------------------- |
+| `npx prisma generate`    | Generates Prisma Client code based on `schema.prisma`            | When you change the schema manually and need new client typings      |
+| `npx prisma db push`     | Pushes schema changes directly to DB (without migration history) | For quick prototyping or when you don’t care about migration history |
+| `npx prisma migrate dev` | Creates and runs a migration + generates client                  | When you want full migration history (recommended for production)    |
+
+---
+
+### 🟨 `db push` vs `migrate dev` – When to Use Which?
+
+| Use `db push`                   | Use `migrate dev`               |
+| ------------------------------- | ------------------------------- |
+| Quick prototyping / local dev   | Production-ready projects       |
+| No need to track schema changes | You want proper migration files |
+| One dev or solo projects        | Teams or long-term codebases    |
+
+> ⚠️ `db push` is **non-destructive** but doesn’t track history. Use it when you're experimenting or in early dev.
+
+---
+
+## ✅ Should You Gitignore Anything?
+
+Here’s a good `.gitignore` setup:
+
+```gitignore
+# Don't commit envs
+.env
+
+# Prisma generated files (optional, if you customized output)
+src/generated/
+
+# Node stuff
+node_modules/
+```
+
+---
+
+## ✅ Summary
+
+| Command                  | When to Run                                            | What It Does                               |
+| ------------------------ | ------------------------------------------------------ | ------------------------------------------ |
+| `npx prisma generate`    | After schema changes, if not using `push` or `migrate` | Generates the Prisma Client                |
+| `npx prisma db push`     | Fast prototyping (no history)                          | Syncs DB schema, no migrations             |
+| `npx prisma migrate dev` | Production or team project                             | Tracks schema changes with migration files |
+
+Let me know if you'd like to add migrations next or build more models (like sessions, tokens, etc.)!
