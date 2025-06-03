@@ -260,3 +260,7 @@ node_modules/
 | `npx prisma migrate dev` | Production or team project                             | Tracks schema changes with migration files |
 
 Let me know if you'd like to add migrations next or build more models (like sessions, tokens, etc.)!
+
+---
+
+### use `npx prisma format` to format the schema file.
