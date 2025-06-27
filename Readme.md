@@ -2,4 +2,4 @@
 
 ### DB Used is postgreSQL (neon DB) with prisma as ORM
 
-- Todo: create login with google in project
+- Todo: create login with google in project.
